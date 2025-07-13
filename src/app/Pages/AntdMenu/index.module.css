@@ -1,0 +1,137 @@
+.antd-menu-nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: #004655;
+    padding: 0 32px;
+    min-height: 56px;
+}
+
+.antd-menu-desktop {
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+
+.antd-menu-mobile {
+    display: none;
+}
+
+.antd-menu-hamburger {
+    color: #fff;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.menu-call-cta-section {
+    display: flex;
+    align-items: center;
+    margin-left: 32px;
+}
+
+.menu-call-cta-section-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0 0 0;
+    width: 100%;
+}
+
+.menu-call-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.menu-call-cta-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #f04223 60%, #faaa23 100%);
+    padding: 2px 40px 2px 12px;
+    border-radius: 32px;
+    mask: radial-gradient(32px at right, #0000 98%, #000);
+}
+
+.menu-call-cta-phoneicon {
+    font-size: 22px;
+    color: #fff;
+    background: #f04223;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.menu-call-cta-texts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+}
+
+.menu-call-cta-label {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.menu-call-cta-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.menu-call-cta-24 {
+    font-size: 25px;
+}
+
+@media (max-width: 768px) {
+    .antd-menu-desktop {
+        display: none;
+    }
+
+    .antd-menu-mobile {
+        display: block;
+    }
+
+    .antd-menu-nav {
+        padding: 0 12px;
+        min-height: 48px;
+        justify-content: space-between;
+    }
+
+    .menu-call-cta-section {
+        display: none;
+    }
+
+    .menu-call-cta-section-mobile {
+        display: flex;
+        margin: 8px 0 8px 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .menu-call-cta-number {
+        font-size: 1rem;
+    }
+}
+
+/* Ant Design menu overrides for dark background */
+.antd-menu-nav .ant-menu-horizontal {
+    background: transparent;
+    border-bottom: none;
+}
+
+.antd-menu-nav .ant-menu-horizontal>.ant-menu-item {
+    color: #dbeafe;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.antd-menu-nav .ant-menu-horizontal>.ant-menu-item:hover {
+    color: #fff;
+    background: transparent;
+}
