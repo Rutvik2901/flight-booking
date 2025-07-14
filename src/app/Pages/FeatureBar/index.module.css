@@ -55,7 +55,25 @@
     }
 }
 
+.feature-bar {
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-bar-1 {
+    display: none;
+}
+
 @media (max-width: 768px) {
+    .feature-bar-1 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feature-bar {
+        display: none;
+    }
+
     .feature-bar-2row {
         padding: 0px;
         gap: 16px 0;

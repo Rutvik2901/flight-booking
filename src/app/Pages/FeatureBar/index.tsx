@@ -7,6 +7,8 @@ import {
     CustomerServiceOutlined
 } from '@ant-design/icons';
 import styles from "./index.module.css";
+import MobileFeatureSection from "../MobileFeatureSection";
+import TravelIcon from "../TravelIcon";
 
 const features = [
     {
@@ -32,17 +34,42 @@ const features = [
 ];
 
 const FeatureBar = () => (
-    <div className={styles["feature-bar-2row"]}>
-        {features.map((f, i) => (
-            <div className={styles["feature-block"]} key={i}>
-                {f.icon}
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography.Title level={5} className={styles["feature-title"]}>{f.title}</Typography.Title>
-                    <Typography.Text className={styles["feature-desc"]}>{f.desc}</Typography.Text>
-                </div>
+    <>
+        <div className={styles["feature-bar"]}>
+            <TravelIcon />
+
+            <div className={styles["feature-bar-2row"]}>
+                {features.map((f, i) => (
+                    <div className={styles["feature-block"]} key={i}>
+                        {f.icon}
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <Typography.Title level={5} className={styles["feature-title"]}>{f.title}</Typography.Title>
+                            <Typography.Text className={styles["feature-desc"]}>{f.desc}</Typography.Text>
+                        </div>
+                    </div>
+                ))}
             </div>
-        ))}
-    </div>
+
+            <MobileFeatureSection />
+        </div>
+
+        <div className={styles["feature-bar-1"]}>
+            <div className={styles["feature-bar-2row"]}>
+                {features.map((f, i) => (
+                    <div className={styles["feature-block"]} key={i}>
+                        {f.icon}
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <Typography.Title level={5} className={styles["feature-title"]}>{f.title}</Typography.Title>
+                            <Typography.Text className={styles["feature-desc"]}>{f.desc}</Typography.Text>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <TravelIcon />
+
+            <MobileFeatureSection />
+        </div>
+    </>
 );
 
 export default FeatureBar; 

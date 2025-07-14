@@ -1,0 +1,84 @@
+.mobileFeatureSection {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobileFeatureSection {
+        display: block;
+        padding: 16px 8px 0 8px;
+        background: #fff;
+        width: 100%;
+    }
+
+    .topFeatures {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 18px;
+        gap: 4px;
+    }
+
+    .featureItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .featureIcon {
+        color: #1a8a4a;
+        font-size: 28px;
+        margin-bottom: 2px;
+    }
+
+    .featureLabel {
+        font-size: 12px;
+        color: #222;
+        text-align: center;
+        line-height: 1.2;
+        font-weight: 500;
+        word-break: break-word;
+    }
+
+    .cardsGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 12px;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0px 8px 40px 8px;
+        min-height: 120px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cardIcon {
+        background: #E05B16;
+        color: #fff;
+        border-radius: 50%;
+        width: 110px;
+        height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 10px;
+        margin-top: -55px;
+    }
+
+    .cardText {
+        color: #222;
+        font-size: 15px;
+        text-align: center;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+}

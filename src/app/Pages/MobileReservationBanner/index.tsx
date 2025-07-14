@@ -24,7 +24,7 @@ const MobileReservationBanner = () => {
             </div>
             {/* Staff image */}
             <div className={styles["mobile-res-staff-img"]}>
-                <Image src="/airplane6.jpeg" alt="Staff" width={400} height={220} style={{ width: '100%', borderRadius: 8 }} />
+                <Image src="/airplane.jpg" alt="Staff" width={400} height={220} style={{ width: '100%', borderRadius: 8 }} />
             </div>
             {/* Booking button */}
             <div className={styles["mobile-res-book-btn"]}>
@@ -37,7 +37,9 @@ const MobileReservationBanner = () => {
                 No Hold  Call Answered In 5 Sec
             </Typography.Text>
             <div className={styles["mobile-res-cta"]}>
-                <div className={styles["mobile-res-cta-phone"]}>
+                <div
+                    onClick={() => window.open("tel:9999999999")}
+                    className={styles["mobile-res-cta-phone"]}>
                     <PhoneFilled style={{ fontSize: 32, color: '#fff', marginRight: 10 }} />
                     <span className={styles["mobile-res-cta-number"]}>1-800-XXX-XXXX</span>
                 </div>

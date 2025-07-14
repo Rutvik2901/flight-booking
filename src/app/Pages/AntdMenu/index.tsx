@@ -27,7 +27,10 @@ const AntdMenu = () => {
     const CallCta = (
         <div className={styles["menu-call-cta"]}>
             <div className={styles["menu-call-cta-left"]}>
-                <div className={styles["menu-call-cta-texts"]}>
+                <div
+                    onClick={() => window.open("tel:9999999999")}
+
+                    className={styles["menu-call-cta-texts"]}>
                     <span className={styles["menu-call-cta-label"]}>CALL US ON</span>
                     <span className={styles["menu-call-cta-number"]}>{CALL_NUMBER}</span>
                 </div>

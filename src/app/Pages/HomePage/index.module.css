@@ -489,7 +489,18 @@
     flex-direction: column;
 }
 
+.flight-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 @media (max-width: 768px) {
+    .flight-form-wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
     .multiCity-fields-row {
         flex-direction: row;
         gap: 8px;

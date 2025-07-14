@@ -53,7 +53,7 @@ const BottomCallBanner = () => {
             </div>
             <div
                 className={styles["call-icon"]}
-                onClick={() => window.open("tel:1800XXXXXXX")}
+                onClick={() => window.open("tel:9999999999")}
             >
                 <PhoneOutlined />
             </div>

@@ -11,7 +11,6 @@ import FeatureBar from "../FeatureBar";
 import FlightInfoBox from "../FlightInfoBox";
 import FooterSection from "../FooterSection";
 import MobileReservationBanner from "../MobileReservationBanner";
-import TravelIcon from "../TravelIcon/index";
 import styles from "./index.module.css";
 
 interface AirportOption {
@@ -19,6 +18,7 @@ interface AirportOption {
     city: string;
     state: string;
     country: string;
+    label?: string; // Optional for Select display
 }
 
 interface FormValues {
@@ -416,22 +416,51 @@ export function HomePage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleFormSubmit = (values: FormValues) => {
+    const handleFormSubmit = async (values: FormValues) => {
         const formattedValues = {
             ...values,
             departDate: values.departDate ? dayjs(values.departDate).format("DD-MM-YYYY") : null,
             returnDate: values.returnDate ? dayjs(values.returnDate).format("DD-MM-YYYY") : null,
         };
-        setShowSuccessMessage(true);
 
         console.log(formattedValues);
 
 
-        // Clear the form after successful submission
-        form.resetFields();
-        setDepartDate(null);
-        setReturnDate(null);
-        setSelectedTripType('roundtrip');
+        // Compose booking summary as message
+        const messageSummary = `\nTrip Type: ${formattedValues.tripType}\nFrom: ${formattedValues.from?.label || ''}\nTo: ${formattedValues.to?.label || ''}\nDepart: ${formattedValues.departDate || ''}\nReturn: ${formattedValues.returnDate || ''}\nPassengers: ${formattedValues.passengers}\nClass: ${formattedValues.class}\nMobile: ${formattedValues.mobile}`;
+
+        try {
+            const res = await fetch("http://localhost:8000/sendMail.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: formattedValues.name,
+                    message: messageSummary
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Form submitted and email sent! Will contact you shortly with cheapest flight options',
+                });
+                // Clear the form after successful submission
+                form.resetFields();
+                setDepartDate(null);
+                setReturnDate(null);
+                setSelectedTripType('roundtrip');
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: data.message || 'Email sending failed. Please try again.',
+                });
+            }
+        } catch (err) {
+            messageApi.open({
+                type: 'error',
+                content: 'Failed to send email. Please try again.',
+            });
+        }
     };
 
     const handleFormSubmitFailed = () => {
@@ -451,194 +480,193 @@ export function HomePage() {
             <div className={styles["main-content"]}>
                 <MobileReservationBanner />
 
-                <div className={styles["flight-form-container"]}>
-                    <Form
-                        form={form}
-                        name="flightBookingForm"
-                        onFinish={handleFormSubmit}
-                        onFinishFailed={handleFormSubmitFailed}
-                        className={styles["flight-form"]}
-                        layout="vertical"
-                        initialValues={{
-                            tripType: 'roundtrip',
-                            passengers: 1,
-                            class: 'Economy'
-                        }}
-                    >
-                        <div className={styles["header"]}>
-                            <span>FLIGHTS</span>
-                        </div>
+                <div className={styles["flight-form-wrapper"]}>
 
-                        {/* Trip Type Field */}
-                        <FormField {...formFields.tripType} />
-
-                        {/* Multi City UI */}
-                        {selectedTripType === 'multicity' ? (
-                            <div>
-                                {multiCitySegments.map((segment, idx) => (
-                                    <div key={idx} className={styles["multiCity-segment"]}>
-                                        <div className={styles["multiCity-fields-row"]}>
-                                            <div className={styles["field-group"] + ' ' + styles["multiCity-field"]}>
-                                                <label>From</label>
-                                                <Select
-                                                    variant="filled"
-                                                    showSearch
-                                                    placeholder="Airport/City Name"
-                                                    value={segment.from?.iata_code}
-                                                    onChange={val => handleSegmentChange(idx, 'from', airportOptions.find(a => a.iata_code === val) || null)}
-                                                    filterOption={(input, option) => {
-                                                        const airport = option?.airport;
-                                                        return (
-                                                            airport.city.toLowerCase().includes(input.toLowerCase()) ||
-                                                            airport.iata_code.toLowerCase().includes(input.toLowerCase()) ||
-                                                            airport.country.toLowerCase().includes(input.toLowerCase())
-                                                        );
-                                                    }}
-                                                    optionLabelProp="label"
-                                                    labelInValue
-                                                    styles={{
-                                                        popup: {
-                                                            root: {
-                                                                background: 'white',
-                                                                padding: 8,
-                                                                borderRadius: 8,
-                                                            }
-                                                        }
-                                                    }}
-                                                    popupRender={menu => <div style={{ background: 'white', borderRadius: 8 }}>{menu}</div>}
-                                                >
-                                                    {airportOptions.map((airport) => (
-                                                        <Select.Option
-                                                            key={airport.iata_code + airport.city}
-                                                            value={airport.iata_code}
-                                                            label={`${airport.city}, ${airport.country}`}
-                                                            airport={airport}
-                                                        >
-                                                            {renderAirportOption(airport)}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                            </div>
-                                            <div className={styles["field-group"] + ' ' + styles["multiCity-field"]}>
-                                                <label>To</label>
-                                                <Select
-                                                    variant="filled"
-                                                    showSearch
-                                                    placeholder="Airport/City Name"
-                                                    value={segment.to?.iata_code}
-                                                    onChange={val => handleSegmentChange(idx, 'to', airportOptions.find(a => a.iata_code === val) || null)}
-                                                    filterOption={(input, option) => {
-                                                        const airport = option?.airport;
-                                                        return (
-                                                            airport.city.toLowerCase().includes(input.toLowerCase()) ||
-                                                            airport.iata_code.toLowerCase().includes(input.toLowerCase()) ||
-                                                            airport.country.toLowerCase().includes(input.toLowerCase())
-                                                        );
-                                                    }}
-                                                    optionLabelProp="label"
-                                                    labelInValue
-                                                    styles={{
-                                                        popup: {
-                                                            root: {
-                                                                background: 'white',
-                                                                padding: 8,
-                                                                borderRadius: 8,
-                                                            }
-                                                        }
-                                                    }}
-                                                    popupRender={menu => <div style={{ background: 'white', borderRadius: 8 }}>{menu}</div>}
-                                                >
-                                                    {airportOptions.map((airport) => (
-                                                        <Select.Option
-                                                            key={airport.iata_code + airport.city + 'to'}
-                                                            value={airport.iata_code}
-                                                            label={`${airport.city}, ${airport.country}`}
-                                                            airport={airport}
-                                                        >
-                                                            {renderAirportOption(airport)}
-                                                        </Select.Option>
-                                                    ))}
-                                                </Select>
-                                            </div>
-                                        </div>
-                                        <div className={styles["multiCity-date-row"]}>
-                                            <div className={styles["field-group"] + ' ' + styles["multiCity-field"]} style={{ width: '100%' }}>
-                                                <label>Departure</label>
-                                                <DatePicker
-                                                    value={segment.departDate}
-                                                    onChange={date => handleSegmentChange(idx, 'departDate', date)}
-                                                    placeholder="Select"
-                                                    variant="filled"
-                                                    style={{ width: '100%' }}
-                                                />
-                                            </div>
-                                            {multiCitySegments.length > 1 && (
-                                                <Button
-                                                    type="text"
-                                                    danger
-                                                    style={{ position: 'absolute', top: 8, right: 8 }}
-                                                    onClick={() => handleRemoveSegment(idx)}
-                                                >Remove</Button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                <Button
-                                    type="default"
-                                    onClick={handleAddSegment}
-                                    disabled={multiCitySegments.length >= 3}
-                                    style={{ marginBottom: 16 }}
-                                >+ ADD ANOTHER CITY</Button>
+                    <div className={styles["flight-form-container"]}>
+                        <Form
+                            form={form}
+                            name="flightBookingForm"
+                            onFinish={handleFormSubmit}
+                            onFinishFailed={handleFormSubmitFailed}
+                            className={styles["flight-form"]}
+                            layout="vertical"
+                            initialValues={{
+                                tripType: 'roundtrip',
+                                passengers: 1,
+                                class: 'Economy'
+                            }}
+                        >
+                            <div className={styles["header"]}>
+                                <span>FLIGHTS</span>
                             </div>
-                        ) : (
-                            <>
-                                {/* From and To Fields */}
-                                <div className={styles["fields"]}>
-                                    <FormField {...formFields.from} />
-                                    <FormField {...formFields.to} />
+
+                            {/* Trip Type Field */}
+                            <FormField {...formFields.tripType} />
+
+                            {/* Multi City UI */}
+                            {selectedTripType === 'multicity' ? (
+                                <div>
+                                    {multiCitySegments.map((segment, idx) => (
+                                        <div key={idx} className={styles["multiCity-segment"]}>
+                                            <div className={styles["multiCity-fields-row"]}>
+                                                <div className={styles["field-group"] + ' ' + styles["multiCity-field"]}>
+                                                    <label>From</label>
+                                                    <Select
+                                                        variant="filled"
+                                                        showSearch
+                                                        placeholder="Airport/City Name"
+                                                        value={segment.from?.iata_code}
+                                                        onChange={val => handleSegmentChange(idx, 'from', airportOptions.find(a => a.iata_code === val) || null)}
+                                                        filterOption={(input, option) => {
+                                                            const airport = option?.airport;
+                                                            return (
+                                                                airport.city.toLowerCase().includes(input.toLowerCase()) ||
+                                                                airport.iata_code.toLowerCase().includes(input.toLowerCase()) ||
+                                                                airport.country.toLowerCase().includes(input.toLowerCase())
+                                                            );
+                                                        }}
+                                                        optionLabelProp="label"
+                                                        labelInValue
+                                                        styles={{
+                                                            popup: {
+                                                                root: {
+                                                                    background: 'white',
+                                                                    padding: 8,
+                                                                    borderRadius: 8,
+                                                                }
+                                                            }
+                                                        }}
+                                                        popupRender={menu => <div style={{ background: 'white', borderRadius: 8 }}>{menu}</div>}
+                                                    >
+                                                        {airportOptions.map((airport) => (
+                                                            <Select.Option
+                                                                key={airport.iata_code + airport.city}
+                                                                value={airport.iata_code}
+                                                                label={`${airport.city}, ${airport.country}`}
+                                                                airport={airport}
+                                                            >
+                                                                {renderAirportOption(airport)}
+                                                            </Select.Option>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+                                                <div className={styles["field-group"] + ' ' + styles["multiCity-field"]}>
+                                                    <label>To</label>
+                                                    <Select
+                                                        variant="filled"
+                                                        showSearch
+                                                        placeholder="Airport/City Name"
+                                                        value={segment.to?.iata_code}
+                                                        onChange={val => handleSegmentChange(idx, 'to', airportOptions.find(a => a.iata_code === val) || null)}
+                                                        filterOption={(input, option) => {
+                                                            const airport = option?.airport;
+                                                            return (
+                                                                airport.city.toLowerCase().includes(input.toLowerCase()) ||
+                                                                airport.iata_code.toLowerCase().includes(input.toLowerCase()) ||
+                                                                airport.country.toLowerCase().includes(input.toLowerCase())
+                                                            );
+                                                        }}
+                                                        optionLabelProp="label"
+                                                        labelInValue
+                                                        styles={{
+                                                            popup: {
+                                                                root: {
+                                                                    background: 'white',
+                                                                    padding: 8,
+                                                                    borderRadius: 8,
+                                                                }
+                                                            }
+                                                        }}
+                                                        popupRender={menu => <div style={{ background: 'white', borderRadius: 8 }}>{menu}</div>}
+                                                    >
+                                                        {airportOptions.map((airport) => (
+                                                            <Select.Option
+                                                                key={airport.iata_code + airport.city + 'to'}
+                                                                value={airport.iata_code}
+                                                                label={`${airport.city}, ${airport.country}`}
+                                                                airport={airport}
+                                                            >
+                                                                {renderAirportOption(airport)}
+                                                            </Select.Option>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                            <div className={styles["multiCity-date-row"]}>
+                                                <div className={styles["field-group"] + ' ' + styles["multiCity-field"]} style={{ width: '100%' }}>
+                                                    <label>Departure</label>
+                                                    <DatePicker
+                                                        value={segment.departDate}
+                                                        onChange={date => handleSegmentChange(idx, 'departDate', date)}
+                                                        placeholder="Select"
+                                                        variant="filled"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                </div>
+                                                {multiCitySegments.length > 1 && (
+                                                    <Button
+                                                        type="text"
+                                                        danger
+                                                        style={{ position: 'absolute', top: 8, right: 8 }}
+                                                        onClick={() => handleRemoveSegment(idx)}
+                                                    >Remove</Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <Button
+                                        type="default"
+                                        onClick={handleAddSegment}
+                                        disabled={multiCitySegments.length >= 3}
+                                        style={{ marginBottom: 16 }}
+                                    >+ ADD ANOTHER CITY</Button>
                                 </div>
+                            ) : (
+                                <>
+                                    {/* From and To Fields */}
+                                    <div className={styles["fields"]}>
+                                        <FormField {...formFields.from} />
+                                        <FormField {...formFields.to} />
+                                    </div>
 
-                                {/* Depart and Return Date Fields */}
-                                <div className={styles["fields"]}>
-                                    <FormField {...formFields.departDate} />
-                                    <FormField {...formFields.returnDate} />
-                                </div>
-                            </>
-                        )}
-                        {/* Passengers and Class Fields */}
-                        <div className={styles["fields"]}>
-                            <FormField {...formFields.passengers} />
-                            <FormField {...formFields.class} />
+                                    {/* Depart and Return Date Fields */}
+                                    <div className={styles["fields"]}>
+                                        <FormField {...formFields.departDate} />
+                                        <FormField {...formFields.returnDate} />
+                                    </div>
+                                </>
+                            )}
+                            {/* Passengers and Class Fields */}
+                            <div className={styles["fields"]}>
+                                <FormField {...formFields.passengers} />
+                                <FormField {...formFields.class} />
+                            </div>
+                            {/* Name and Mobile Fields */}
+                            <div className={styles["fields"]}>
+                                <FormField {...formFields.name} />
+                                <FormField {...formFields.mobile} />
+                            </div>
+                            <Form.Item>
+                                <Button type="default" htmlType="submit" className={styles["search-btn"]}>
+                                    Submit now
+                                </Button>
+                            </Form.Item>
+                        </Form>
+
+                        <div className={styles["book-flights-typography"]} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 50, color: 'black', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <Typography.Title level={2} style={{ color: 'black', marginBottom: 0 }}>
+                                Book Cheap Flights
+                            </Typography.Title>
+
+                            <Typography.Text style={{ color: 'black', fontSize: 16 }}>
+                                with us & enjoy big savings!
+                            </Typography.Text>
                         </div>
-                        {/* Name and Mobile Fields */}
-                        <div className={styles["fields"]}>
-                            <FormField {...formFields.name} />
-                            <FormField {...formFields.mobile} />
-                        </div>
-                        <Form.Item>
-                            <Button type="default" htmlType="submit" className={styles["search-btn"]}>
-                                Submit now
-                            </Button>
-                        </Form.Item>
-                    </Form>
-
-                    <div className={styles["book-flights-typography"]} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 50, color: 'black', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <Typography.Title level={2} style={{ color: 'black', marginBottom: 0 }}>
-                            Book Cheap Flights
-                        </Typography.Title>
-
-                        <Typography.Text style={{ color: 'black', fontSize: 16 }}>
-                            with us & enjoy big savings!
-                        </Typography.Text>
                     </div>
+
+                    <FeatureBar />
                 </div>
 
-                {/* Trust Markers */}
-                <div className={styles["trust-markers-container"]}>
-                    <TravelIcon />
-                </div>
-
-                <FeatureBar />
                 <FlightInfoBox />
             </div>
 
