@@ -59,6 +59,8 @@ const FormField: React.FC<FormFieldProps> = ({ name, label, rules, children, cla
     </Form.Item>
 );
 
+const BASE_URL = "";  // update the base URL to your actual endpoint
+
 export function HomePage() {
     const [form] = Form.useForm<FormValues>();
     const [departDate, setDepartDate] = useState<Dayjs | null>(null);
@@ -430,7 +432,7 @@ export function HomePage() {
         const messageSummary = `\nTrip Type: ${formattedValues.tripType}\nFrom: ${formattedValues.from?.label || ''}\nTo: ${formattedValues.to?.label || ''}\nDepart: ${formattedValues.departDate || ''}\nReturn: ${formattedValues.returnDate || ''}\nPassengers: ${formattedValues.passengers}\nClass: ${formattedValues.class}\nMobile: ${formattedValues.mobile}`;
 
         try {
-            const res = await fetch("http://localhost:8000/sendMail.php", {
+            const res = await fetch(`${BASE_URL}/sendMail.php`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
