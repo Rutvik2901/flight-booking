@@ -3,6 +3,7 @@ import styles from "./index.module.css";
 import {
     PhoneOutlined
 } from '@ant-design/icons';
+import Image from "next/image";
 
 const BottomCallBanner = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -41,7 +42,7 @@ const BottomCallBanner = () => {
     return (
         <div className={styles["call-banner"]}>
             <div className={styles["left-section"]}>
-                <img
+                <Image
                     src="/airplane1.jpeg"
                     alt="Support"
                     className={styles["icon"]}

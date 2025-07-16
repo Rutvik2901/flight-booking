@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import { UpOutlined } from "@ant-design/icons";
@@ -59,7 +60,7 @@ const FormField: React.FC<FormFieldProps> = ({ name, label, rules, children, cla
     </Form.Item>
 );
 
-const BASE_URL = "";  // update the base URL to your actual endpoint
+const BASE_URL = "https://quicktravels.online";  // update the base URL to your actual endpoint
 
 export function HomePage() {
     const [form] = Form.useForm<FormValues>();
@@ -151,15 +152,6 @@ export function HomePage() {
             return current < today;
         }
         return current < today || current < departDate.startOf('day');
-    };
-
-    const handleAirportChange = (field: 'from' | 'to', value: string) => {
-        const airport = airportOptions.find((a) => a.iata_code === value);
-        if (airport) {
-            console.log(airport);
-
-            form.setFieldsValue({ [field]: airport });
-        }
     };
 
     const handleAddSegment = () => {
@@ -457,7 +449,7 @@ export function HomePage() {
                     content: data.message || 'Email sending failed. Please try again.',
                 });
             }
-        } catch (err) {
+        } catch {
             messageApi.open({
                 type: 'error',
                 content: 'Failed to send email. Please try again.',

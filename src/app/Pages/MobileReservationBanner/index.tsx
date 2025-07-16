@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { PhoneFilled } from "@ant-design/icons";
 import { Button, Typography } from "antd";
-import { PhoneFilled, MenuOutlined } from "@ant-design/icons";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 
 const MobileReservationBanner = () => {

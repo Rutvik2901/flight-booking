@@ -1,12 +1,10 @@
-import React from "react";
-import styles from "./index.module.css";
-import { Typography } from "antd";
 import {
-    SecurityScanOutlined, SecurityScanFilled,
-    SafetyOutlined,
+    CustomerServiceFilled,
     SafetyCertificateFilled,
-    CustomerServiceFilled
+    SecurityScanFilled
 } from '@ant-design/icons';
+import { Typography } from "antd";
+import styles from "./index.module.css";
 
 const TravelIcon = () => {
     return (

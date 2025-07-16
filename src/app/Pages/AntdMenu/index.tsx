@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Menu, Drawer, Button } from "antd";
-import { CustomerServiceOutlined, MenuOutlined, PhoneFilled } from "@ant-design/icons";
+import { CustomerServiceOutlined, MenuOutlined } from "@ant-design/icons";
+import { Button, Drawer, Menu } from "antd";
+import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 
 const items = [
