@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import styles from "./index.module.css";
 import {
     PhoneOutlined
 } from '@ant-design/icons';
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import styles from "./index.module.css";
 
 const BottomCallBanner = () => {
     const [isVisible, setIsVisible] = useState(false);
@@ -42,8 +41,8 @@ const BottomCallBanner = () => {
     return (
         <div className={styles["call-banner"]}>
             <div className={styles["left-section"]}>
-                <Image
-                    src="/airplane1.jpeg"
+                <img
+                    src={'./airplane1.jpeg'}
                     alt="Support"
                     className={styles["icon"]}
                 />

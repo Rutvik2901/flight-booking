@@ -1,6 +1,5 @@
 import { PhoneFilled } from "@ant-design/icons";
 import { Button, Typography } from "antd";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./index.module.css";
 
@@ -24,7 +23,7 @@ const MobileReservationBanner = () => {
             </div>
             {/* Staff image */}
             <div className={styles["mobile-res-staff-img"]}>
-                <Image src="/airplane.jpg" alt="Staff" width={400} height={220} style={{ width: '100%', borderRadius: 8 }} />
+                <img src={"airplane.jpg"} alt="Staff" width={400} height={220} style={{ width: '100%', borderRadius: 8 }} />
             </div>
             {/* Booking button */}
             <div className={styles["mobile-res-book-btn"]}>
